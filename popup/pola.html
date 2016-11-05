@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="pola.css" />
+
+    </head>
+
+    <body>
+        <div id="loading">Ładowanie...</div>
+        <div id="null">Nie znaleziono kodu na stronie</div>
+        <div id="multiple">
+            Wybierz kod:
+            <ul id="multiple-ul">
+
+            </ul>
+        </div>
+        <div id="error">Wystąpił błąd</div>
+        <div id="result">
+            <div id="result-name"></div>
+            <div class="progress">
+                <div class="progress-bar" id="result-points-bar"></div>
+                <div class="progress-text" id="result-points-text"></div>
+            </div>
+            <div id="result-capital">udział polskiego kapitału:</div>
+            <div class="progress" id="result-capital-progress">
+                <div class="progress-bar" id="result-assets-bar"></div>
+                <div class="progress-text" id="result-assets-text"></div>
+            </div>
+            <div class="checkbox">
+                <input type="checkbox" disabled="disabled" id="result-checkbox-production" /><label for="result-checkbox-production"></label>produkuje w Polsce
+            </div>
+            <div class="checkbox">
+                <input type="checkbox" disabled="disabled" id="result-checkbox-rnd" /><label for="result-checkbox-rnd"></label>prowadzi
+                badania i rozwój w Polsce
+            </div>
+            <div class="checkbox">
+                <input type="checkbox" disabled="disabled" id="result-checkbox-registered" /><label for="result-checkbox-registered"></label>zarejestrowana w Polsce
+            </div>
+            <div class="checkbox">
+                <input type="checkbox" disabled="disabled" id="result-checkbox-corp" /><label for="result-checkbox-corp"></label>nie
+                jest częścią zagranicznego koncernu
+            </div>
+            <div id="result-description"></div>
+        </div>
+        <script src="pola.js"></script>
+    </body>
+
+</html>

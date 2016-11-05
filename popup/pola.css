@@ -1,0 +1,146 @@
+body {
+    width: 320px;
+    height: 300px;
+    background: white;
+    font-size: 12px;
+    font-family: courier;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    overflow: hidden;
+}
+
+#loading, #null, #error {
+    width: 100%;
+    text-align: center;
+    font-size: x-large;
+    padding-top: 60px;
+    display: none;
+}
+
+#loading {
+    display: block;
+}
+
+#result {
+    display: none;
+}
+
+#multiple {
+    display: none;
+    padding-top: 20px;
+    text-align: center;
+    font-size: larger;
+}
+
+#multiple-ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    overflow: auto;
+    max-height: 250px;
+}
+
+#multiple-ul button {
+    cursor: pointer;
+    width: 90%;
+    padding: 5px;
+}
+
+#multiple-ul li {
+    padding: 5px;
+}
+
+.progress {
+    width: 100%;
+    height: 18px;
+    background: gray;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: red;
+}
+
+.progress-text {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    line-height: 18px;
+    color: white;
+    font-weight: bold;
+}
+
+#result-name {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: larger;
+    font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#result-capital {
+    margin-top: 10px;
+    margin-bottom: 8px;
+}
+
+#result-capital-progress {
+    height: 14px;
+    font-size: smaller;
+}
+
+#result-capital-progress .progress-text {
+    line-height: 14px;
+}
+
+#result .checkbox {
+    margin-top: 8px;
+    height: 14px;
+    vertical-align: middle;
+    line-height: 14px;
+}
+
+#result .checkbox input {
+    height: 14px;
+    vertical-align: middle;
+    position: relative;
+    line-height: 14px;
+}
+
+#result-description {
+    margin-top: 15px;
+    overflow: auto;
+    height: 100px;
+}
+
+input[type="checkbox"].question {
+    display: none;
+}
+
+input[type="checkbox"].question + label {
+    display: inline-block;
+    border: 1px solid gray;
+    width: 0.8em;
+    height: 0.8em;
+    position: relative;
+    margin-right: 5px;
+}
+
+input[type="checkbox"].question + label:after {
+    content: '?';
+    display: inline-block;
+    position: relative;
+    top: -1px;
+    margin: 0;
+    padding: 0;
+}
