@@ -76,26 +76,14 @@
         if (result === null && (gtin13.length > 0 || gtin8.length > 0 || flix.length > 0)) {
             result = [];
         }
-        if (window.navigator.userAgent.indexOf('Edge') !== -1) {
-            for (let i = 0; i < gtin13.length; i++) {
-                result.push(gtin13[i].getAttribute('content'));
-            }
-            for (let i = 0; i < gtin8.length; i++) {
-                result.push(gtin8[i].getAttribute('content'));
-            }
-            for (let i = 0; i < flix.length; i++) {
-                result.push(flix[i].getAttribute('data-flix-ean'));
-            }
-        } else {
-            for (let elem of gtin13) {
-                result.push(elem.getAttribute('content'));
-            }
-            for (let elem of gtin8) {
-                result.push(elem.getAttribute('content'));
-            }
-            for (let elem of flix) {
-                result.push(elem.getAttribute('data-flix-ean'));
-            }
+        for (let elem of gtin13) {
+            result.push(elem.getAttribute('content'));
+        }
+        for (let elem of gtin8) {
+            result.push(elem.getAttribute('content'));
+        }
+        for (let elem of flix) {
+            result.push(elem.getAttribute('data-flix-ean'));
         }
     }
     if (result !== null) {

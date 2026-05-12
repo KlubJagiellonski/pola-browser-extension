@@ -2,10 +2,14 @@
     class Pola {
         constructor() {
             this.setLoading();
-            window.chrome.runtime.onMessage.addListener(this.notify.bind(this));
-            window.chrome.tabs.executeScript(null, {
-                file: '/content_scripts/pola.js',
-                runAt: 'document_end'
+            chrome.runtime.onMessage.addListener(this.notify.bind(this));
+            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+                if (tabs[0]) {
+                    chrome.scripting.executeScript({
+                        target: { tabId: tabs[0].id },
+                        files: ['/content_scripts/pola.js']
+                    });
+                }
             });
         }
         hideAll() {
@@ -45,72 +49,85 @@
             }
         }
         setResult(json) {
-            let plScore = json.plScore || 0;
-            let plCapital = json.plCapital || 0;
             this.hideAll();
             document.getElementById('result').style.display = 'block';
-            document.getElementById('result-name').textContent = json.name;
+
+            let company = json.companies && json.companies.length > 0 ? json.companies[0] : null;
+            if (!company) {
+                document.getElementById('result-name').textContent = json.name || 'Nieznany produkt';
+                document.getElementById('result-points-bar').style.width = '0%';
+                document.getElementById('result-points-text').textContent = '?';
+                document.getElementById('result-assets-bar').style.width = '0%';
+                document.getElementById('result-assets-text').textContent = '?';
+                document.getElementById('result-description').textContent = json.altText || '';
+                return;
+            }
+
+            let plScore = company.plScore || 0;
+            let plCapital = company.plCapital || 0;
+
+            document.getElementById('result-name').textContent = company.name;
             document.getElementById('result-points-bar').style.width = plScore.toString() + '%';
-            document.getElementById('result-points-text').textContent = (json.plScore === null ? '?' : plScore.toString() + ' pkt.');
+            document.getElementById('result-points-text').textContent = (company.plScore === null ? '?' : plScore.toString() + ' pkt.');
             document.getElementById('result-assets-bar').style.width = plCapital.toString() + '%';
-            document.getElementById('result-assets-text').textContent = (json.plCapital === null ? '?' : plCapital.toString() + '%');
-            document.getElementById('result-checkbox-production').checked = (json.plWorkers === 100);
-            if (json.plWorkers === null) {
+            document.getElementById('result-assets-text').textContent = (company.plCapital === null ? '?' : plCapital.toString() + '%');
+            document.getElementById('result-checkbox-production').checked = (company.plWorkers === 100);
+            if (company.plWorkers === null) {
                 document.getElementById('result-checkbox-production').className = 'question';
             }
-            document.getElementById('result-checkbox-rnd').checked = (json.plRnD === 100);
-            if (json.plRnD === null) {
+            document.getElementById('result-checkbox-rnd').checked = (company.plRnD === 100);
+            if (company.plRnD === null) {
                 document.getElementById('result-checkbox-rnd').className = 'question';
             }
-            document.getElementById('result-checkbox-registered').checked = (json.plRegistered === 100);
-            if (json.plRegistered === null) {
+            document.getElementById('result-checkbox-registered').checked = (company.plRegistered === 100);
+            if (company.plRegistered === null) {
                 document.getElementById('result-checkbox-registered').className = 'question';
             }
-            document.getElementById('result-checkbox-corp').checked = (json.plNotGlobEnt === 100);
-            if (json.plNotGlobEnt === null) {
+            document.getElementById('result-checkbox-corp').checked = (company.plNotGlobEnt === 100);
+            if (company.plNotGlobEnt === null) {
                 document.getElementById('result-checkbox-corp').className = 'question';
             }
-            document.getElementById('result-description').textContent = json.description || json.altText || '';
+            document.getElementById('result-description').textContent = company.description || json.altText || '';
         }
         setCache(text) {
             try {
-                let json = window.JSON.parse(text);
-                window.chrome.storage.local.set({[json.code]: text});
+                let json = JSON.parse(text);
+                chrome.storage.local.set({[json.code]: text});
                 this.setResult(json);
             } catch (e) {
                 this.setError();
             }
         }
         getCache(ean) {
-            window.chrome.storage.local.get('lastClear', result => {
-                if (!window.chrome.runtime.lastError) {
+            chrome.storage.local.get('lastClear', result => {
+                if (!chrome.runtime.lastError) {
                     if (result.hasOwnProperty(('lastClear'))) {
-                        if (result.lastClear < window.Date.now() - 86400) {
-                            window.chrome.storage.local.get(null, result => {
-                                if (!window.chrome.runtime.lastError) {
+                        if (result.lastClear < Date.now() - 86400000) {
+                            chrome.storage.local.get(null, result => {
+                                if (!chrome.runtime.lastError) {
                                     let toDelete = [];
-                                    for (let elem of window.Object.getOwnPropertyNames(result)) {
+                                    for (let elem of Object.getOwnPropertyNames(result)) {
                                         if ((elem.length === 13 || elem.length === 8) && !isNaN(elem)) {
                                             toDelete.push(elem);
                                         }
                                     }
-                                    window.chrome.storage.local.remove(toDelete);
-                                    window.chrome.storage.local.set({lastClear: window.Date.now()});
+                                    chrome.storage.local.remove(toDelete);
+                                    chrome.storage.local.set({lastClear: Date.now()});
                                 }
                             });
                         }
                     } else {
-                        window.chrome.storage.local.set({lastClear: window.Date.now()});
+                        chrome.storage.local.set({lastClear: Date.now()});
                     }
                 }
             });
-            window.chrome.storage.local.get(ean, text => {
-                if (window.chrome.runtime.lastError) {
-                    this.setEan2(ean);
+            chrome.storage.local.get(ean, text => {
+                if (chrome.runtime.lastError) {
+                    this.fetchFromApi(ean);
                 } else if (text.hasOwnProperty(ean)) {
-                    this.setResult(window.JSON.parse(text[ean]));
+                    this.setResult(JSON.parse(text[ean]));
                 } else {
-                    this.setEan2(ean);
+                    this.fetchFromApi(ean);
                 }
             });
         }
@@ -118,31 +135,20 @@
             this.setLoading();
             this.getCache(ean);
         }
-        setEan2(ean) {
-            if (window.navigator.userAgent.indexOf('Edge') !== -1) {
-                let req = new window.XMLHttpRequest();
-                req.open('GET', 'https://www.pola-app.pl/a/v2/get_by_code?code=' + ean + '&device_id=we', false);
-                req.send(null);
-                if (req.status === 200) {
-                    this.setCache(req.responseText);
-                } else {
-                    this.setError();
+        fetchFromApi(ean) {
+            fetch('https://www.pola-app.pl/a/v4/get_by_code?code=' + encodeURIComponent(ean) + '&device_id=we', {
+                referrer: 'no-referrer',
+                referrerPolicy: 'no-referrer'
+            }).then(response => {
+                if (response.ok) {
+                    return response.text();
                 }
-            } else {
-                window.fetch('https://www.pola-app.pl/a/v2/get_by_code?code=' + ean + '&device_id=we', {
-                    referrer: 'no-referrer',
-                    referrerPolicy: 'no-referrer'
-                }).then(response => {
-                    if (response.status === 200) {
-                        return response.text();
-                    }
-                    throw new window.Error('err');
-                }).then(text => {
-                    this.setCache(text);
-                }).catch(() => {
-                    this.setError();
-                });
-            }
+                throw new Error('API error: ' + response.status);
+            }).then(text => {
+                this.setCache(text);
+            }).catch(() => {
+                this.setError();
+            });
         }
         notify(message) {
             switch (message.type) {
