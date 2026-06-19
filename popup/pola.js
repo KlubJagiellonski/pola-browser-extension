@@ -4,12 +4,19 @@
             this.setLoading();
             chrome.runtime.onMessage.addListener(this.notify.bind(this));
             chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-                if (tabs[0]) {
-                    chrome.scripting.executeScript({
-                        target: { tabId: tabs[0].id },
-                        files: ['/content_scripts/pola.js']
-                    });
+                const tabId = tabs && tabs[0] ? tabs[0].id : null;
+                if (!tabId) {
+                    this.setNull();
+                    return;
                 }
+                chrome.scripting.executeScript({
+                    target: { tabId },
+                    files: ['content_scripts/pola.js']
+                }, () => {
+                    if (chrome.runtime.lastError) {
+                        this.setError();
+                    }
+                });
             });
         }
         hideAll() {
