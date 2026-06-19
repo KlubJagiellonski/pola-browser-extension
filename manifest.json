@@ -37,11 +37,5 @@
         "default_popup": "popup/pola.html"
     },
 
-    "content_scripts": [
-        {
-            "matches": ["https://*/*", "http://*/*"],
-            "js": ["content_scripts/pola.js"],
-            "run_at": "document_end"
-        }
-    ]
+    "content_scripts": []
 }
