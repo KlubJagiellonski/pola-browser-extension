@@ -4,19 +4,31 @@
             this.setLoading();
             chrome.runtime.onMessage.addListener(this.notify.bind(this));
             chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-                const tabId = tabs && tabs[0] ? tabs[0].id : null;
-                if (!tabId) {
-                    this.setNull();
-                    return;
+                const tabId = tabs && tabs[0] ? tabs[0].id : null;
+
+                if (!tabId) {
+
+                    this.setNull();
+
+                    return;
+
                 }
-                chrome.scripting.executeScript({
-                    target: { tabId },
-                    files: ['content_scripts/pola.js']
-                }, () => {
-                    if (chrome.runtime.lastError) {
-                        this.setError();
-                    }
-                });
+                chrome.scripting.executeScript({
+
+                    target: { tabId },
+
+                    files: ['content_scripts/pola.js']
+
+                }, () => {
+
+                    if (chrome.runtime.lastError) {
+
+                        this.setError();
+
+                    }
+
+                });
+
             });
         }
         hideAll() {
@@ -54,9 +66,23 @@
                 li.appendChild(button);
                 ul.appendChild(li);
             }
+
+                const checkboxIds = [
+                    'result-checkbox-production',
+                    'result-checkbox-rnd',
+                    'result-checkbox-registered',
+                    'result-checkbox-corp'
+                ];
+                for (const id of checkboxIds) {
+                    const el = document.getElementById(id);
+                    el.checked = false;
+                    el.className = 'question';
+                }
+
         }
         setResult(json) {
             this.hideAll();
+            }
             document.getElementById('result').style.display = 'block';
 
             let company = json.companies && json.companies.length > 0 ? json.companies[0] : null;
