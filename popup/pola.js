@@ -17,7 +17,7 @@
 
                     target: { tabId },
 
-                    files: ['content_scripts/pola.js']
+                    files: ['lib/validateEAN.js', 'content_scripts/pola.js']
 
                 }, () => {
 
@@ -197,5 +197,9 @@
         }
     }
 
-    new Pola();
+    if (typeof module !== 'undefined' && module.exports) {
+        module.exports = { Pola };
+    } else {
+        new Pola();
+    }
 }
