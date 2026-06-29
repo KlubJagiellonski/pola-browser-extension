@@ -82,7 +82,6 @@
         }
         setResult(json) {
             this.hideAll();
-            }
             document.getElementById('result').style.display = 'block';
 
             let company = json.companies && json.companies.length > 0 ? json.companies[0] : null;
