@@ -28,7 +28,7 @@ Wspierane sklepy:
   
 Pracujemy nad wsparciem dla:
 ------
-* https://mamyito
+* https://mamyito.pl
 * https://polskikoszyk.pl/
 * https://www.carrefour.pl/
 * https://zakupy.biedronka.pl/
