@@ -4,7 +4,6 @@ on:
   push:
   pull_request:
   schedule:
-    # Codziennie o 6:00 UTC — wykrywa zmiany na stronach sklepów
     - cron: '0 6 * * *'
 
 jobs:

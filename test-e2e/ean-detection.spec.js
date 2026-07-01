@@ -8,11 +8,6 @@
  * 4. Wstrzykuje lib/validateEAN.js (definicja funkcji walidacji)
  * 5. Wstrzykuje content_scripts/pola.js (logika skanowania)
  * 6. Sprawdza czy content script znalazł oczekiwany kod EAN
- *
- * UWAGA: Te testy odpytują prawdziwe strony internetowe, więc:
- * - Mogą być wolniejsze (zależą od sieci)
- * - Mogą się "zepsuć" jeśli sklep zmieni stronę (wtedy trzeba zaktualizować test)
- * - W CI uruchamiamy je z retry=1 i osobnym jobem (allow-failure)
  */
 
 const { test, expect } = require('@playwright/test');
@@ -54,32 +49,60 @@ async function injectContentScript(page) {
 // TESTY
 // ============================================================================
 
+const productPages = [
+    {
+        store: 'frisco.pl',
+        product: 'Makłowicz i Synowie oliwa z oliwek extra virgin',
+        ean: '5905644030022',
+        url: 'https://www.frisco.pl/pid,145610/n,maklowicz-i-synowie-oliwa-z-oliwek-extra-vergine/stn,product',
+    },
+    {
+        store: 'erli.pl',
+        product: 'Szklany dzbanek filtrujący Dafi CRYSTAL 2l biały',
+        ean: '5900950928254',
+        url: 'https://erli.pl/produkt/szklany-dzbanek-filtrujacy-dafi-crystal-2l-bialy,159105253',
+    },
+    {
+        store: 'dodomku.pl',
+        product: 'Maluta Masło ekstra',
+        ean: '5904467191316',
+        url: 'https://dodomku.pl/Maluta_Maslo_ekstra/61218_2435341_552.html',
+    },
+    {
+        store: 'megasam24.pl',
+        product: 'Baton mango bez dodatku cukru 35 g',
+        ean: '4820287102619',
+        url: 'https://megasam24.pl/baton-mango-bez-dodatku-cukru-35-g',
+    },
+    {
+        store: 'leclerc-online.pl',
+        product: 'Dolina Noteci Premium Sterilised Danie z kaczki dla kota 85g',
+        ean: '5902921303213',
+        url: 'https://leclerc-online.pl/dolina-noteci-premium-sterilised-danie-z-kaczki-dla-kota-85g',  
+    }
+];
+
 test.describe('EAN detection on real product pages', () => {
 
-    test('frisco.pl — Makłowicz oliwa z oliwek → EAN 5905644030022', async ({ page }) => {
-        await page.goto(
-            'https://www.frisco.pl/pid,145610/n,maklowicz-i-synowie-oliwa-z-oliwek-extra-vergine/stn,product',
-            { waitUntil: 'domcontentloaded' }
-        );
+    for (const { store, product, ean, url } of productPages) {
+        test(`${store} — ${product} → EAN ${ean}`, async ({ page }) => {
+            await page.goto(url, { waitUntil: 'domcontentloaded' });
 
-        const messages = await injectContentScript(page);
+            const messages = await injectContentScript(page);
 
-        // Content script powinien znaleźć dokładnie 1 EAN i wysłać { type: 'ean', result: '...' }
-        // LUB znaleźć wiele i wysłać { type: 'multiple', result: [...] }
-        const eanMessage = messages.find(m => m.type === 'ean');
-        const multipleMessage = messages.find(m => m.type === 'multiple');
+            const eanMessage = messages.find(m => m.type === 'ean');
+            const multipleMessage = messages.find(m => m.type === 'multiple');
 
-        if (eanMessage) {
-            expect(eanMessage.result).toBe('5905644030022');
-        } else if (multipleMessage) {
-            expect(multipleMessage.result).toContain('5905644030022');
-        } else {
-            // Jeśli nie znaleziono — test powinien sfailować z czytelnym komunikatem
-            throw new Error(
-                `Content script nie znalazł EAN 5905644030022 na stronie frisco.pl. ` +
-                `Przechwycone wiadomości: ${JSON.stringify(messages)}`
-            );
-        }
-    });
-
+            if (eanMessage) {
+                expect(eanMessage.result).toBe(ean);
+            } else if (multipleMessage) {
+                expect(multipleMessage.result).toContain(ean);
+            } else {
+                throw new Error(
+                    `Content script nie znalazł EAN ${ean} na stronie ${store}. ` +
+                    `Przechwycone wiadomości: ${JSON.stringify(messages)}`
+                );
+            }
+        });
+    }
 });
