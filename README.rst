@@ -17,9 +17,8 @@ Chrome
 4) Wskaż folder z rozszerzeniem i kliknij **OK**
 
 
-Wspierane sklepy:
-=======
-
+Wspierane sklepy
+================
 * https://www.frisco.pl/
 * https://erli.pl/
 * https://dodomku.pl/
