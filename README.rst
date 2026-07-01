@@ -15,3 +15,24 @@ Chrome
 2) Włącz **Developer mode** (prawy górny róg)
 3) Kliknij **Load unpacked**
 4) Wskaż folder z rozszerzeniem i kliknij **OK**
+
+
+Wspierane sklepy
+================
+* https://www.frisco.pl/
+* https://erli.pl/
+* https://dodomku.pl/
+* https://megasam24.pl/
+* https://leclerc-online.pl/
+  
+Pracujemy nad wsparciem dla
+---------------------------
+* https://mamyito.pl
+* https://polskikoszyk.pl/
+* https://www.carrefour.pl/
+* https://zakupy.biedronka.pl/
+* https://delio.com.pl/
+* https://topaz24.pl/
+* https://szybkikoszyk.pl/
+* https://sklep.brat.pl/
+* https://www.espolem.pl/
