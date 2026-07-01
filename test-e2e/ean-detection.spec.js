@@ -61,6 +61,9 @@ const productPages = [
         product: 'Szklany dzbanek filtrujący Dafi CRYSTAL 2l biały',
         ean: '5900950928254',
         url: 'https://erli.pl/produkt/szklany-dzbanek-filtrujacy-dafi-crystal-2l-bialy,159105253',
+        // Cloudflare wystawia challenge page dla IP runnerów GitHub Actions (data center),
+        // co blokuje wykrycie EAN. Lokalnie (rezydencjalny IP) przechodzi bez problemu.
+        skipOnCI: true,
     },
     {
         store: 'dodomku.pl',
@@ -78,14 +81,19 @@ const productPages = [
         store: 'leclerc-online.pl',
         product: 'Dolina Noteci Premium Sterilised Danie z kaczki dla kota 85g',
         ean: '5902921303213',
-        url: 'https://leclerc-online.pl/dolina-noteci-premium-sterilised-danie-z-kaczki-dla-kota-85g',  
+        url: 'https://leclerc-online.pl/dolina-noteci-premium-sterilised-danie-z-kaczki-dla-kota-85g',
+        // Cloudflare (Turnstile) wystawia challenge page z restrykcyjnym CSP dla IP runnerów
+        // GitHub Actions, co blokuje wstrzyknięcie inline scriptu. Lokalnie działa poprawnie.
+        skipOnCI: true,
     }
 ];
 
 test.describe('EAN detection on real product pages', () => {
 
-    for (const { store, product, ean, url } of productPages) {
+    for (const { store, product, ean, url, skipOnCI } of productPages) {
         test(`${store} — ${product} → EAN ${ean}`, async ({ page }) => {
+            test.skip(!!process.env.CI && !!skipOnCI, 'Zablokowane przez Cloudflare dla IP runnerów CI — patrz komentarz przy definicji strony');
+
             await page.goto(url, { waitUntil: 'domcontentloaded' });
 
             const messages = await injectContentScript(page);
