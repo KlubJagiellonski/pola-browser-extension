@@ -25,8 +25,8 @@ Wspierane sklepy
 * https://megasam24.pl/
 * https://leclerc-online.pl/
   
-Pracujemy nad wsparciem dla:
-------
+Pracujemy nad wsparciem dla
+---------------------------
 * https://mamyito.pl
 * https://polskikoszyk.pl/
 * https://www.carrefour.pl/
