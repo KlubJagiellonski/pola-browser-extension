@@ -20,11 +20,11 @@ beforeEach(() => {
     global.chrome = chromeMock;
 
     // Clear module cache so popup/pola.js re-executes with fresh mocks
-    const popupPath = path.resolve(__dirname, '..', 'popup', 'pola.js');
-    delete require.cache[popupPath];
+    const popupModulePath = require.resolve('../popup/pola.js');
+    delete require.cache[popupModulePath];
 
     // Load the module (it exports Pola class instead of instantiating it in test env)
-    Pola = require('../popup/pola.js').Pola;
+    Pola = require(popupModulePath).Pola;
 });
 
 afterEach(() => {
