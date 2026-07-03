@@ -83,8 +83,16 @@
             if (!url) {
                 return false;
             }
-            const u = url.toLowerCase();
-            return !u.includes('example.pl') && !u.includes('example.com');
+            try {
+                const u = new URL(url);
+                if (u.protocol !== 'http:' && u.protocol !== 'https:') {
+                    return false;
+                }
+                const host = u.hostname.toLowerCase();
+                return host !== 'example.pl' && host !== 'example.com' && !host.endsWith('.example.pl') && !host.endsWith('.example.com');
+            } catch {
+                return false;
+            }
         }
         restartAnimation(el) {
             el.classList.remove('animate');
@@ -194,12 +202,18 @@
                 const img = document.createElement('img');
                 img.src = brand.logotype_url;
                 img.alt = brand.name || '';
-                img.addEventListener('error', () => {
-                    tile.remove();
-                    if (grid.childElementCount === 0) {
-                        section.hidden = true;
-                    }
-                });
+                img.addEventListener('error', () => {
+
+                    tile.remove();
+
+                    if (grid.childElementCount === 0) {
+
+                        section.hidden = true;
+
+                    }
+
+                });
+
                 if (this.isRealUrl(brand.website_url)) {
                     const a = document.createElement('a');
                     a.href = brand.website_url;
