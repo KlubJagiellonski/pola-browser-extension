@@ -103,79 +103,104 @@ describe('Pola popup', () => {
     });
 
     describe('setResult()', () => {
+        const makeCompany = (overrides = {}) => ({
+            name: 'Firma Testowa',
+            plScore: 75,
+            plCapital: 100,
+            plWorkers: 100,
+            plRnD: 100,
+            plRegistered: 100,
+            plNotGlobEnt: 100,
+            description: 'Opis firmy testowej',
+            ...overrides
+        });
+
         test('renders company data correctly', () => {
             const pola = new Pola();
             const json = {
                 code: '5900000000008',
-                companies: [{
-                    name: 'Firma Testowa',
-                    plScore: 75,
-                    plCapital: 100,
-                    plWorkers: 100,
-                    plRnD: 100,
-                    plRegistered: 100,
-                    plNotGlobEnt: 100,
-                    description: 'Opis firmy testowej'
-                }]
+                companies: [makeCompany()]
             };
 
             pola.setResult(json);
 
             expect(document.getElementById('result').style.display).toBe('block');
+            expect(document.getElementById('result-verified').hidden).toBe(false);
+            expect(document.getElementById('result-unverified').hidden).toBe(true);
             expect(document.getElementById('result-name').textContent).toBe('Firma Testowa');
-            expect(document.getElementById('result-points-bar').style.width).toBe('75%');
-            expect(document.getElementById('result-points-text').textContent).toBe('75 pkt.');
-            expect(document.getElementById('result-assets-bar').style.width).toBe('100%');
-            expect(document.getElementById('result-assets-text').textContent).toBe('100%');
-            expect(document.getElementById('result-description').textContent).toBe('Opis firmy testowej');
+            expect(document.getElementById('result-score-value').textContent).toBe('75');
+            expect(document.getElementById('result-score-fill').style.width).toBe('75%');
+            expect(document.getElementById('result-score-placeholder').hidden).toBe(true);
+            expect(document.getElementById('result-gauge-label').textContent).toBe('100 %');
+            expect(document.getElementById('result-gauge-value-path').style.strokeDashoffset).toBe('0');
+            expect(document.getElementById('result-description-text').textContent).toBe('Opis firmy testowej');
         });
 
-        test('renders checkboxes correctly when all values are 100', () => {
+        test('marks criteria as met when all values are 100', () => {
+            const pola = new Pola();
+            pola.setResult({ companies: [makeCompany()] });
+
+            for (const id of ['result-criterion-production', 'result-criterion-rnd', 'result-criterion-registered', 'result-criterion-corp']) {
+                const el = document.getElementById(id);
+                expect(el.classList.contains('met')).toBe(true);
+                expect(el.dataset.state).toBeUndefined();
+            }
+        });
+
+        test('renders unknown state for null values when score is known', () => {
             const pola = new Pola();
             const json = {
-                companies: [{
-                    name: 'Test',
+                companies: [makeCompany({
                     plScore: 50,
-                    plCapital: 50,
-                    plWorkers: 100,
-                    plRnD: 100,
-                    plRegistered: 100,
-                    plNotGlobEnt: 100,
-                    description: ''
-                }]
-            };
-
-            pola.setResult(json);
-
-            expect(document.getElementById('result-checkbox-production').checked).toBe(true);
-            expect(document.getElementById('result-checkbox-rnd').checked).toBe(true);
-            expect(document.getElementById('result-checkbox-registered').checked).toBe(true);
-            expect(document.getElementById('result-checkbox-corp').checked).toBe(true);
-        });
-
-        test('shows "?" for null values', () => {
-            const pola = new Pola();
-            const json = {
-                companies: [{
-                    name: 'Test',
-                    plScore: null,
                     plCapital: null,
                     plWorkers: null,
                     plRnD: null,
                     plRegistered: null,
                     plNotGlobEnt: null,
                     description: ''
-                }]
+                })]
             };
 
             pola.setResult(json);
 
-            expect(document.getElementById('result-points-text').textContent).toBe('?');
-            expect(document.getElementById('result-assets-text').textContent).toBe('?');
-            expect(document.getElementById('result-checkbox-production').className).toBe('question');
-            expect(document.getElementById('result-checkbox-rnd').className).toBe('question');
-            expect(document.getElementById('result-checkbox-registered').className).toBe('question');
-            expect(document.getElementById('result-checkbox-corp').className).toBe('question');
+            expect(document.getElementById('result-verified').hidden).toBe(false);
+            expect(document.getElementById('result-unverified').hidden).toBe(true);
+            expect(document.getElementById('result-gauge-label').textContent).toBe('—');
+            expect(document.getElementById('result-gauge-value-path').style.strokeDashoffset).toBe('254.469');
+            for (const id of ['result-criterion-production', 'result-criterion-rnd', 'result-criterion-registered', 'result-criterion-corp']) {
+                const el = document.getElementById(id);
+                expect(el.classList.contains('met')).toBe(false);
+                expect(el.dataset.state).toBe('unknown');
+            }
+        });
+
+        test('shows unverified view when plScore is null', () => {
+            const pola = new Pola();
+            pola.setResult({ companies: [makeCompany({ plScore: null, is_friend: true })] });
+
+            expect(document.getElementById('result-verified').hidden).toBe(true);
+            expect(document.getElementById('result-unverified').hidden).toBe(false);
+            expect(document.getElementById('result-name').textContent).toBe('Firma Testowa');
+            // opis, logo i marki pozostają widoczne mimo braku weryfikacji
+            expect(document.getElementById('result-description-text').textContent).toBe('Opis firmy testowej');
+        });
+
+        test('treats plScore of 0 as verified', () => {
+            const pola = new Pola();
+            pola.setResult({ companies: [makeCompany({ plScore: 0 })] });
+
+            expect(document.getElementById('result-verified').hidden).toBe(false);
+            expect(document.getElementById('result-unverified').hidden).toBe(true);
+            expect(document.getElementById('result-score-value').textContent).toBe('0');
+            expect(document.getElementById('result-score-fill').style.width).toBe('0%');
+        });
+
+        test('computes gauge dashoffset from plCapital', () => {
+            const pola = new Pola();
+            pola.setResult({ companies: [makeCompany({ plCapital: 50 })] });
+
+            expect(document.getElementById('result-gauge-label').textContent).toBe('50 %');
+            expect(document.getElementById('result-gauge-value-path').style.strokeDashoffset).toBe(String(0.5 * 254.469));
         });
 
         test('handles missing company (no companies array)', () => {
@@ -188,9 +213,214 @@ describe('Pola popup', () => {
             pola.setResult(json);
 
             expect(document.getElementById('result-name').textContent).toBe('Produkt bez firmy');
-            expect(document.getElementById('result-points-text').textContent).toBe('?');
-            expect(document.getElementById('result-assets-text').textContent).toBe('?');
-            expect(document.getElementById('result-description').textContent).toBe('Nie znaleziono informacji');
+            expect(document.getElementById('result-verified').hidden).toBe(true);
+            expect(document.getElementById('result-unverified').hidden).toBe(false);
+            expect(document.getElementById('result-description-text').textContent).toBe('Nie znaleziono informacji');
+            expect(document.getElementById('result-friend-banner').hidden).toBe(true);
+            expect(document.getElementById('result-logo-link').hidden).toBe(true);
+            expect(document.getElementById('result-brands-section').hidden).toBe(true);
+        });
+
+        test('shows friend banner only when is_friend is true', () => {
+            const pola = new Pola();
+
+            pola.setResult({ companies: [makeCompany({ is_friend: true })] });
+            expect(document.getElementById('result-friend-banner').hidden).toBe(false);
+
+            pola.setResult({ companies: [makeCompany({ is_friend: false })] });
+            expect(document.getElementById('result-friend-banner').hidden).toBe(true);
+
+            pola.setResult({ companies: [makeCompany()] });
+            expect(document.getElementById('result-friend-banner').hidden).toBe(true);
+        });
+
+        test('shows russia info box for codes with prefix 46 or 481', () => {
+            const pola = new Pola();
+
+            pola.setResult({ code: '4601234567890', companies: [makeCompany()] });
+            expect(document.getElementById('result-russia-box').hidden).toBe(false);
+
+            pola.setResult({ code: '4811234567890', companies: [makeCompany()] });
+            expect(document.getElementById('result-russia-box').hidden).toBe(false);
+
+            pola.setResult({ code: '5901234123457', companies: [makeCompany()] });
+            expect(document.getElementById('result-russia-box').hidden).toBe(true);
+        });
+    });
+
+    describe('description read-more', () => {
+        const longText = 'A'.repeat(200);
+
+        test('truncates long description and shows toggle', () => {
+            const pola = new Pola();
+            pola.setResult({ companies: [{ name: 'Test', description: longText }] });
+
+            const textEl = document.getElementById('result-description-text');
+            const toggle = document.getElementById('result-description-toggle');
+            expect(textEl.textContent.endsWith('…')).toBe(true);
+            expect(textEl.textContent.length).toBeLessThanOrEqual(151);
+            expect(toggle.hidden).toBe(false);
+            expect(toggle.textContent).toBe('Czytaj więcej');
+        });
+
+        test('toggle expands and collapses description', () => {
+            const pola = new Pola();
+            pola.setResult({ companies: [{ name: 'Test', description: longText }] });
+
+            const textEl = document.getElementById('result-description-text');
+            const toggle = document.getElementById('result-description-toggle');
+
+            toggle.click();
+            expect(textEl.textContent).toBe(longText);
+            expect(toggle.textContent).toBe('Pokaż mniej');
+
+            toggle.click();
+            expect(textEl.textContent.endsWith('…')).toBe(true);
+            expect(toggle.textContent).toBe('Czytaj więcej');
+        });
+
+        test('new setResult resets expanded state', () => {
+            const pola = new Pola();
+            pola.setResult({ companies: [{ name: 'Test', description: longText }] });
+            document.getElementById('result-description-toggle').click();
+
+            pola.setResult({ companies: [{ name: 'Test', description: longText }] });
+            expect(document.getElementById('result-description-text').textContent.endsWith('…')).toBe(true);
+            expect(document.getElementById('result-description-toggle').textContent).toBe('Czytaj więcej');
+        });
+
+        test('short description has no toggle', () => {
+            const pola = new Pola();
+            pola.setResult({ companies: [{ name: 'Test', description: 'Krótki opis' }] });
+
+            expect(document.getElementById('result-description-text').textContent).toBe('Krótki opis');
+            expect(document.getElementById('result-description-toggle').hidden).toBe(true);
+        });
+    });
+
+    describe('company logo', () => {
+        test('shows logo linked to real official_url', () => {
+            const pola = new Pola();
+            pola.setResult({
+                companies: [{
+                    name: 'Test',
+                    logotype_url: 'https://cdn.example.org/logo.png',
+                    official_url: 'https://firma.pl/'
+                }]
+            });
+
+            const link = document.getElementById('result-logo-link');
+            expect(link.hidden).toBe(false);
+            expect(link.getAttribute('href')).toBe('https://firma.pl/');
+            expect(document.getElementById('result-logo-img').getAttribute('src')).toBe('https://cdn.example.org/logo.png');
+        });
+
+        test('does not link logo for placeholder official_url', () => {
+            const pola = new Pola();
+            pola.setResult({
+                companies: [{
+                    name: 'Test',
+                    logotype_url: 'https://cdn.example.org/logo.png',
+                    official_url: 'https://example.pl/'
+                }]
+            });
+
+            const link = document.getElementById('result-logo-link');
+            expect(link.hidden).toBe(false);
+            expect(link.getAttribute('href')).toBeNull();
+        });
+
+        test('hides logo when logotype_url is missing', () => {
+            const pola = new Pola();
+            pola.setResult({ companies: [{ name: 'Test' }] });
+
+            expect(document.getElementById('result-logo-link').hidden).toBe(true);
+        });
+
+        test('hides logo on image load error and restores it on next render', () => {
+            const pola = new Pola();
+            const company = {
+                name: 'Test',
+                logotype_url: 'https://cdn.example.org/logo.png',
+                official_url: 'https://firma.pl/'
+            };
+            pola.setResult({ companies: [company] });
+
+            document.getElementById('result-logo-img').dispatchEvent(new Event('error'));
+            expect(document.getElementById('result-logo-link').hidden).toBe(true);
+
+            pola.setResult({ companies: [company] });
+            expect(document.getElementById('result-logo-link').hidden).toBe(false);
+        });
+    });
+
+    describe('brands', () => {
+        test('renders only brands with logotype_url', () => {
+            const pola = new Pola();
+            pola.setResult({
+                companies: [{
+                    name: 'Test',
+                    brands: [
+                        { name: 'Marka A', logotype_url: 'https://cdn.example.org/a.png', website_url: 'https://marka-a.pl/' },
+                        { name: 'Marka B', logotype_url: null, website_url: 'example.pl' },
+                        { name: 'Marka C' }
+                    ]
+                }]
+            });
+
+            expect(document.getElementById('result-brands-section').hidden).toBe(false);
+            const tiles = document.querySelectorAll('#result-brands-grid .brand-tile');
+            expect(tiles.length).toBe(1);
+            const anchor = tiles[0].querySelector('a');
+            expect(anchor).not.toBeNull();
+            expect(anchor.getAttribute('href')).toBe('https://marka-a.pl/');
+            expect(anchor.getAttribute('target')).toBe('_blank');
+        });
+
+        test('renders unlinked tile for placeholder website_url', () => {
+            const pola = new Pola();
+            pola.setResult({
+                companies: [{
+                    name: 'Test',
+                    brands: [
+                        { name: 'Marka A', logotype_url: 'https://cdn.example.org/a.png', website_url: 'example.pl' }
+                    ]
+                }]
+            });
+
+            const tiles = document.querySelectorAll('#result-brands-grid .brand-tile');
+            expect(tiles.length).toBe(1);
+            expect(tiles[0].querySelector('a')).toBeNull();
+            expect(tiles[0].querySelector('img').getAttribute('src')).toBe('https://cdn.example.org/a.png');
+        });
+
+        test('hides section when no brand has a logo', () => {
+            const pola = new Pola();
+            pola.setResult({
+                companies: [{
+                    name: 'Test',
+                    brands: [{ name: 'Marka B', logotype_url: null }]
+                }]
+            });
+
+            expect(document.getElementById('result-brands-section').hidden).toBe(true);
+        });
+
+        test('does not accumulate tiles across renders', () => {
+            const pola = new Pola();
+            const json = {
+                companies: [{
+                    name: 'Test',
+                    brands: [
+                        { name: 'Marka A', logotype_url: 'https://cdn.example.org/a.png' }
+                    ]
+                }]
+            };
+
+            pola.setResult(json);
+            pola.setResult(json);
+
+            expect(document.querySelectorAll('#result-brands-grid .brand-tile').length).toBe(1);
         });
     });
 
