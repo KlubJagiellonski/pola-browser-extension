@@ -194,7 +194,12 @@
                 const img = document.createElement('img');
                 img.src = brand.logotype_url;
                 img.alt = brand.name || '';
-                img.addEventListener('error', () => tile.remove());
+                img.addEventListener('error', () => {
+                    tile.remove();
+                    if (grid.childElementCount === 0) {
+                        section.hidden = true;
+                    }
+                });
                 if (this.isRealUrl(brand.website_url)) {
                     const a = document.createElement('a');
                     a.href = brand.website_url;
