@@ -125,6 +125,8 @@ describe('Pola popup', () => {
             pola.setResult(json);
 
             expect(document.getElementById('result').style.display).toBe('block');
+            expect(document.getElementById('result-verified').hidden).toBe(false);
+            expect(document.getElementById('result-unverified').hidden).toBe(true);
             expect(document.getElementById('result-name').textContent).toBe('Firma Testowa');
             expect(document.getElementById('result-score-value').textContent).toBe('75');
             expect(document.getElementById('result-score-fill').style.width).toBe('75%');
@@ -145,11 +147,11 @@ describe('Pola popup', () => {
             }
         });
 
-        test('renders unknown state for null values', () => {
+        test('renders unknown state for null values when score is known', () => {
             const pola = new Pola();
             const json = {
                 companies: [makeCompany({
-                    plScore: null,
+                    plScore: 50,
                     plCapital: null,
                     plWorkers: null,
                     plRnD: null,
@@ -161,9 +163,8 @@ describe('Pola popup', () => {
 
             pola.setResult(json);
 
-            expect(document.getElementById('result-score-value').textContent).toBe('-');
-            expect(document.getElementById('result-score-fill').style.width).toBe('0%');
-            expect(document.getElementById('result-score-placeholder').hidden).toBe(false);
+            expect(document.getElementById('result-verified').hidden).toBe(false);
+            expect(document.getElementById('result-unverified').hidden).toBe(true);
             expect(document.getElementById('result-gauge-label').textContent).toBe('—');
             expect(document.getElementById('result-gauge-value-path').style.strokeDashoffset).toBe('254.469');
             for (const id of ['result-criterion-production', 'result-criterion-rnd', 'result-criterion-registered', 'result-criterion-corp']) {
@@ -171,6 +172,27 @@ describe('Pola popup', () => {
                 expect(el.classList.contains('met')).toBe(false);
                 expect(el.dataset.state).toBe('unknown');
             }
+        });
+
+        test('shows unverified view when plScore is null', () => {
+            const pola = new Pola();
+            pola.setResult({ companies: [makeCompany({ plScore: null, is_friend: true })] });
+
+            expect(document.getElementById('result-verified').hidden).toBe(true);
+            expect(document.getElementById('result-unverified').hidden).toBe(false);
+            expect(document.getElementById('result-name').textContent).toBe('Firma Testowa');
+            // opis, logo i marki pozostają widoczne mimo braku weryfikacji
+            expect(document.getElementById('result-description-text').textContent).toBe('Opis firmy testowej');
+        });
+
+        test('treats plScore of 0 as verified', () => {
+            const pola = new Pola();
+            pola.setResult({ companies: [makeCompany({ plScore: 0 })] });
+
+            expect(document.getElementById('result-verified').hidden).toBe(false);
+            expect(document.getElementById('result-unverified').hidden).toBe(true);
+            expect(document.getElementById('result-score-value').textContent).toBe('0');
+            expect(document.getElementById('result-score-fill').style.width).toBe('0%');
         });
 
         test('computes gauge dashoffset from plCapital', () => {
@@ -191,9 +213,8 @@ describe('Pola popup', () => {
             pola.setResult(json);
 
             expect(document.getElementById('result-name').textContent).toBe('Produkt bez firmy');
-            expect(document.getElementById('result-score-value').textContent).toBe('-');
-            expect(document.getElementById('result-score-placeholder').hidden).toBe(false);
-            expect(document.getElementById('result-gauge-label').textContent).toBe('—');
+            expect(document.getElementById('result-verified').hidden).toBe(true);
+            expect(document.getElementById('result-unverified').hidden).toBe(false);
             expect(document.getElementById('result-description-text').textContent).toBe('Nie znaleziono informacji');
             expect(document.getElementById('result-friend-banner').hidden).toBe(true);
             expect(document.getElementById('result-logo-link').hidden).toBe(true);

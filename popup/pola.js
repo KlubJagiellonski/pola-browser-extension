@@ -216,6 +216,10 @@
             document.getElementById('result-russia-box').hidden = !(code.startsWith('46') || code.startsWith('481'));
 
             let company = json.companies && json.companies.length > 0 ? json.companies[0] : null;
+            const isVerified = !!company && company.plScore !== null && company.plScore !== undefined;
+            document.getElementById('result-verified').hidden = !isVerified;
+            document.getElementById('result-unverified').hidden = isVerified;
+
             if (!company) {
                 document.getElementById('result-name').textContent = json.name || 'Nieznany produkt';
                 document.getElementById('result-friend-banner').hidden = true;

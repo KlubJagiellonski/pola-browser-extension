@@ -257,6 +257,33 @@ body {
     color: var(--pola-inactive);
 }
 
+#result-unverified {
+    text-align: center;
+    margin: 2em 0;
+}
+
+#result-unverified[hidden] {
+    display: none;
+}
+
+.unverified-icon {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 20px;
+}
+
+.unverified-text {
+    font-size: 16px;
+    color: #555;
+    font-weight: 600;
+    margin: 0 0 1em;
+}
+
+.unverified-thanks {
+    font-weight: 700;
+    margin: 0;
+}
+
 #result-description {
     font-size: 13px;
     font-weight: 600;
