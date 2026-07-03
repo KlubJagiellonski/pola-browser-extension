@@ -18,31 +18,95 @@
         </div>
         <div id="error">Wystąpił błąd</div>
         <div id="result">
-            <div id="result-name"></div>
-            <div class="progress">
-                <div class="progress-bar" id="result-points-bar"></div>
-                <div class="progress-text" id="result-points-text"></div>
+            <h3 id="result-name"></h3>
+
+            <div id="result-russia-box" hidden>
+                Ten produkt pochodzi z kraju, który dokonał inwazji na Ukrainę. Zastanów się, czy chcesz go kupić.
             </div>
-            <div id="result-capital">udział polskiego kapitału:</div>
-            <div class="progress" id="result-capital-progress">
-                <div class="progress-bar" id="result-assets-bar"></div>
-                <div class="progress-text" id="result-assets-text"></div>
+
+            <div id="result-friend-banner" hidden>
+                <span>❤️</span><span>Ta firma jest Przyjacielem Poli</span><span>❤️</span>
             </div>
-            <div class="checkbox">
-                <input type="checkbox" disabled="disabled" id="result-checkbox-production" /><label for="result-checkbox-production"></label>produkuje w Polsce
+
+            <div class="score-row">
+                <div class="score-label">
+                    <svg class="info-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+                        <circle cx="12" cy="7.5" r="1.5" fill="currentColor" />
+                        <rect x="10.75" y="10.5" width="2.5" height="8" rx="1.25" fill="currentColor" />
+                    </svg>
+                    Nasza ocena:&nbsp;<b id="result-score-value">-</b>&nbsp;pkt
+                </div>
+                <div class="score-bar">
+                    <div class="score-bar-fill" id="result-score-fill"></div>
+                    <div class="score-bar-placeholder" id="result-score-placeholder" hidden>brak punktacji w rankingu Poli</div>
+                </div>
             </div>
-            <div class="checkbox">
-                <input type="checkbox" disabled="disabled" id="result-checkbox-rnd" /><label for="result-checkbox-rnd"></label>prowadzi
-                badania i rozwój w Polsce
+
+            <h2 class="criteria-heading">Kryteria oceniania:</h2>
+            <div class="criteria-row">
+                <div class="gauge">
+                    <svg width="120" height="120" viewBox="0 -78 120 146.4" aria-hidden="true">
+                        <path class="gauge-track" d="M 21.8162 21.8162 A 54 54 0 1 1 98.1838 21.8162" />
+                        <path class="gauge-value" id="result-gauge-value-path" d="M 21.8162 21.8162 A 54 54 0 1 1 98.1838 21.8162" />
+                    </svg>
+                    <div class="gauge-label" id="result-gauge-label">—</div>
+                    <div class="gauge-subtitle">Polski kapitał</div>
+                </div>
+                <div class="criteria-list">
+                    <div class="criterion" id="result-criterion-production">
+                        <svg class="icon-check" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+                            <path d="M7 12l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        <svg class="icon-circle" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+                        </svg>
+                        <span>Produkuje w Polsce</span>
+                    </div>
+                    <div class="criterion" id="result-criterion-rnd">
+                        <svg class="icon-check" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+                            <path d="M7 12l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        <svg class="icon-circle" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+                        </svg>
+                        <span>Prowadzi badania w Polsce</span>
+                    </div>
+                    <div class="criterion" id="result-criterion-registered">
+                        <svg class="icon-check" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+                            <path d="M7 12l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        <svg class="icon-circle" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+                        </svg>
+                        <span>Zarejestrowana w Polsce</span>
+                    </div>
+                    <div class="criterion" id="result-criterion-corp">
+                        <svg class="icon-check" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+                            <path d="M7 12l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        <svg class="icon-circle" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+                        </svg>
+                        <span>Nie jest częścią zagranicznego koncernu</span>
+                    </div>
+                </div>
             </div>
-            <div class="checkbox">
-                <input type="checkbox" disabled="disabled" id="result-checkbox-registered" /><label for="result-checkbox-registered"></label>zarejestrowana w Polsce
+
+            <p id="result-description"><span id="result-description-text"></span><span id="result-description-toggle" hidden>Czytaj więcej</span></p>
+
+            <a id="result-logo-link" target="_blank" rel="noopener noreferrer" hidden>
+                <div class="company-logo"><img id="result-logo-img" alt=""></div>
+            </a>
+
+            <div id="result-brands-section" hidden>
+                <h4>Marki producenta:</h4>
+                <div id="result-brands-grid"></div>
             </div>
-            <div class="checkbox">
-                <input type="checkbox" disabled="disabled" id="result-checkbox-corp" /><label for="result-checkbox-corp"></label>nie
-                jest częścią zagranicznego koncernu
-            </div>
-            <div id="result-description"></div>
         </div>
         <script src="pola.js"></script>
     </body>

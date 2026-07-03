@@ -1,6 +1,18 @@
 {
     class Pola {
         constructor() {
+            this.fullDescription = '';
+            this.descriptionExpanded = false;
+            const toggle = document.getElementById('result-description-toggle');
+            if (toggle) {
+                toggle.addEventListener('click', this.toggleDescription.bind(this));
+            }
+            const logoImg = document.getElementById('result-logo-img');
+            if (logoImg) {
+                logoImg.addEventListener('error', () => {
+                    document.getElementById('result-logo-link').hidden = true;
+                });
+            }
             this.setLoading();
             chrome.runtime.onMessage.addListener(this.notify.bind(this));
             chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -66,60 +78,170 @@
                 li.appendChild(button);
                 ul.appendChild(li);
             }
-
-                const checkboxIds = [
-                    'result-checkbox-production',
-                    'result-checkbox-rnd',
-                    'result-checkbox-registered',
-                    'result-checkbox-corp'
-                ];
-                for (const id of checkboxIds) {
-                    const el = document.getElementById(id);
-                    el.checked = false;
-                    el.className = 'question';
-                }
-
+        }
+        isRealUrl(url) {
+            if (!url) {
+                return false;
+            }
+            const u = url.toLowerCase();
+            return !u.includes('example.pl') && !u.includes('example.com');
+        }
+        restartAnimation(el) {
+            el.classList.remove('animate');
+            void el.offsetWidth;
+            el.classList.add('animate');
+        }
+        setCriterion(id, value) {
+            const el = document.getElementById(id);
+            el.classList.toggle('met', value === 100);
+            if (value === null || value === undefined) {
+                el.dataset.state = 'unknown';
+                el.title = 'brak danych';
+            } else {
+                delete el.dataset.state;
+                el.removeAttribute('title');
+            }
+        }
+        setScore(plScore) {
+            const value = document.getElementById('result-score-value');
+            const fill = document.getElementById('result-score-fill');
+            const placeholder = document.getElementById('result-score-placeholder');
+            if (plScore === null || plScore === undefined) {
+                value.textContent = '-';
+                fill.style.width = '0%';
+                fill.classList.remove('animate');
+                placeholder.hidden = false;
+            } else {
+                value.textContent = plScore.toString();
+                fill.style.width = plScore.toString() + '%';
+                placeholder.hidden = true;
+                this.restartAnimation(fill);
+            }
+        }
+        setGauge(plCapital) {
+            const label = document.getElementById('result-gauge-label');
+            const path = document.getElementById('result-gauge-value-path');
+            const arcLength = 254.469;
+            if (plCapital === null || plCapital === undefined) {
+                label.textContent = '—';
+                path.style.strokeDashoffset = arcLength.toString();
+                path.classList.remove('animate');
+            } else {
+                label.textContent = plCapital.toString() + ' %';
+                path.style.strokeDashoffset = ((1 - plCapital / 100) * arcLength).toString();
+                this.restartAnimation(path);
+            }
+        }
+        renderDescription(text) {
+            this.fullDescription = text || '';
+            this.descriptionExpanded = false;
+            this.updateDescription();
+        }
+        toggleDescription() {
+            this.descriptionExpanded = !this.descriptionExpanded;
+            this.updateDescription();
+        }
+        updateDescription() {
+            const textEl = document.getElementById('result-description-text');
+            const toggle = document.getElementById('result-description-toggle');
+            const text = this.fullDescription;
+            if (text.length > 150) {
+                toggle.hidden = false;
+                if (this.descriptionExpanded) {
+                    textEl.textContent = text;
+                    toggle.textContent = 'Pokaż mniej';
+                } else {
+                    textEl.textContent = text.slice(0, 150).trimEnd() + '…';
+                    toggle.textContent = 'Czytaj więcej';
+                }
+            } else {
+                textEl.textContent = text;
+                toggle.hidden = true;
+            }
+        }
+        renderLogo(company) {
+            const link = document.getElementById('result-logo-link');
+            const img = document.getElementById('result-logo-img');
+            if (!company || !company.logotype_url) {
+                link.hidden = true;
+                img.removeAttribute('src');
+                return;
+            }
+            link.hidden = false;
+            if (this.isRealUrl(company.official_url)) {
+                link.href = company.official_url;
+            } else {
+                link.removeAttribute('href');
+            }
+            img.src = company.logotype_url;
+            img.alt = company.name || '';
+        }
+        renderBrands(company) {
+            const section = document.getElementById('result-brands-section');
+            const grid = document.getElementById('result-brands-grid');
+            while (grid.lastChild) {
+                grid.removeChild(grid.lastChild);
+            }
+            const brands = (company && company.brands || []).filter(b => b.logotype_url);
+            if (brands.length === 0) {
+                section.hidden = true;
+                return;
+            }
+            section.hidden = false;
+            for (const brand of brands) {
+                const tile = document.createElement('div');
+                tile.className = 'brand-tile';
+                const img = document.createElement('img');
+                img.src = brand.logotype_url;
+                img.alt = brand.name || '';
+                img.addEventListener('error', () => tile.remove());
+                if (this.isRealUrl(brand.website_url)) {
+                    const a = document.createElement('a');
+                    a.href = brand.website_url;
+                    a.target = '_blank';
+                    a.rel = 'noopener noreferrer';
+                    a.appendChild(img);
+                    tile.appendChild(a);
+                } else {
+                    tile.appendChild(img);
+                }
+                grid.appendChild(tile);
+            }
         }
         setResult(json) {
             this.hideAll();
             document.getElementById('result').style.display = 'block';
 
+            const code = String(json.code || '');
+            document.getElementById('result-russia-box').hidden = !(code.startsWith('46') || code.startsWith('481'));
+
             let company = json.companies && json.companies.length > 0 ? json.companies[0] : null;
             if (!company) {
                 document.getElementById('result-name').textContent = json.name || 'Nieznany produkt';
-                document.getElementById('result-points-bar').style.width = '0%';
-                document.getElementById('result-points-text').textContent = '?';
-                document.getElementById('result-assets-bar').style.width = '0%';
-                document.getElementById('result-assets-text').textContent = '?';
-                document.getElementById('result-description').textContent = json.altText || '';
+                document.getElementById('result-friend-banner').hidden = true;
+                this.setScore(null);
+                this.setGauge(null);
+                this.setCriterion('result-criterion-production', null);
+                this.setCriterion('result-criterion-rnd', null);
+                this.setCriterion('result-criterion-registered', null);
+                this.setCriterion('result-criterion-corp', null);
+                this.renderDescription(json.altText || '');
+                this.renderLogo(null);
+                this.renderBrands(null);
                 return;
             }
 
-            let plScore = company.plScore || 0;
-            let plCapital = company.plCapital || 0;
-
             document.getElementById('result-name').textContent = company.name;
-            document.getElementById('result-points-bar').style.width = plScore.toString() + '%';
-            document.getElementById('result-points-text').textContent = (company.plScore === null ? '?' : plScore.toString() + ' pkt.');
-            document.getElementById('result-assets-bar').style.width = plCapital.toString() + '%';
-            document.getElementById('result-assets-text').textContent = (company.plCapital === null ? '?' : plCapital.toString() + '%');
-            document.getElementById('result-checkbox-production').checked = (company.plWorkers === 100);
-            if (company.plWorkers === null) {
-                document.getElementById('result-checkbox-production').className = 'question';
-            }
-            document.getElementById('result-checkbox-rnd').checked = (company.plRnD === 100);
-            if (company.plRnD === null) {
-                document.getElementById('result-checkbox-rnd').className = 'question';
-            }
-            document.getElementById('result-checkbox-registered').checked = (company.plRegistered === 100);
-            if (company.plRegistered === null) {
-                document.getElementById('result-checkbox-registered').className = 'question';
-            }
-            document.getElementById('result-checkbox-corp').checked = (company.plNotGlobEnt === 100);
-            if (company.plNotGlobEnt === null) {
-                document.getElementById('result-checkbox-corp').className = 'question';
-            }
-            document.getElementById('result-description').textContent = company.description || json.altText || '';
+            document.getElementById('result-friend-banner').hidden = !company.is_friend;
+            this.setScore(company.plScore);
+            this.setGauge(company.plCapital);
+            this.setCriterion('result-criterion-production', company.plWorkers);
+            this.setCriterion('result-criterion-rnd', company.plRnD);
+            this.setCriterion('result-criterion-registered', company.plRegistered);
+            this.setCriterion('result-criterion-corp', company.plNotGlobEnt);
+            this.renderDescription(company.description || json.altText || '');
+            this.renderLogo(company);
+            this.renderBrands(company);
         }
         setCache(text) {
             try {
