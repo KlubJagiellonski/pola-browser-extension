@@ -24,15 +24,27 @@ Wspierane sklepy
 * https://dodomku.pl/
 * https://megasam24.pl/
 * https://leclerc-online.pl/
+* https://www.carrefour.pl/
+* https://szybkikoszyk.pl/
+* https://sklep.brat.pl/
+* https://www.espolem.pl/
+* https://zakupy.auchan.pl/
+* https://e-spar.com.pl/
+* https://www.pakomarket.pl/
+* https://bialystok.esklep.bi1.pl
+* https://emmamarket.pl
+* https://zakupy-eleclerc.pl
+* https://www.bee.pl/
+* https://e-prim.pl
   
 Pracujemy nad wsparciem dla
 ---------------------------
 * https://mamyito.pl
 * https://polskikoszyk.pl/
-* https://www.carrefour.pl/
 * https://zakupy.biedronka.pl/
 * https://delio.com.pl/
 * https://topaz24.pl/
-* https://szybkikoszyk.pl/
-* https://sklep.brat.pl/
-* https://www.espolem.pl/
+* https://www.lidl.pl/
+* https://www.emaja24.pl/
+* https://lisek.app/
+* https://marketbio.pl/
