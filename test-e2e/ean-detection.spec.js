@@ -165,6 +165,30 @@ const productPages = [
         product: 'Kujawski — Olej Kujawski 2 l',
         ean: '5900012003608',
         url: 'https://e-prim.pl/pl/products/olej-kujawski-2l-11380',
+    },
+    {
+        store: 'polskikoszyk.pl',
+        product: 'Dega Sałatka pikantna z makrelą 130 g',
+        ean: '5907623267788',
+        url: 'https://polskikoszyk.pl/dega-salatka-pikantna-z-makrela-130g',
+    },
+    {
+        store: 'pyszneeko.pl',
+        product: 'Mąka pszenna tortowa typ 480 1 kg Bio Planet EKO',
+        ean: '5907814660121',
+        url: 'https://pyszneeko.pl/product-pol-2744-Maka-pszenna-tortowa-typ-480-1-kg-Bio-Planet-EKO.html?rec=102002101',
+    },
+    {
+        store: 'emaja24.pl',
+        product: 'Aga-Holtex — Daktyle suszone 120 g',
+        ean: '5905027000260',
+        url: 'https://www.emaja24.pl/pl/p/Aga-Holtex-Daktyle-suszone-120g-Bakalie/5470',
+    },
+    {
+        store: 'marketbio.pl',
+        product: 'Sol Kłodawska kam. nat. do przetworów niej. 1,1 kg',
+        ean: '5902587000952',
+        url: 'https://marketbio.pl/sol-klodawska-kam-nat-do-przetworow-niej-1-1-kg.html',
     }
 ];
 

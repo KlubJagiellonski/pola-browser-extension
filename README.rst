@@ -37,14 +37,15 @@ Wspierane sklepy
 * https://www.bee.pl/
 * https://e-prim.pl
 * https://lisek.app/
+* https://pyszneeko.pl/
+* https://polskikoszyk.pl/
+* https://www.emaja24.pl/
+* https://marketbio.pl/
 
 Pracujemy nad wsparciem dla
 ---------------------------
 * https://mamyito.pl
-* https://polskikoszyk.pl/
 * https://zakupy.biedronka.pl/
 * https://delio.com.pl/
 * https://topaz24.pl/
 * https://www.lidl.pl/
-* https://www.emaja24.pl/
-* https://marketbio.pl/

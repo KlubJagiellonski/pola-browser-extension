@@ -2,25 +2,7 @@
     let domain = document.location.hostname || '';
     let result = null;
     let exceptions = {
-        'www.neo24.pl': ['meta[property="og:image"][content]', 'content', /^.*\/(\d{13}|\d{8})..\.[a-z]{3,4}$/i],
-        'www.neonet.pl': ['meta[property="og:image"][content]', 'content', /^.*\/(\d{13}|\d{8})..\.[a-z]{3,4}$/i],
-        'www.megamarket24.pl': ['meta[property="og:url"][content]', 'content', /^.*\-(\d{13}|\d{8})\.html(?:\?.*)?$/i],
-        'aptekasowa.pl': ['meta[property="og:url"][content]', 'content', /^.*\-(\d{13}|\d{8})\.html(?:\?.*)?$/i],
-        'yesorganic.pl': ['meta[property="og:url"][content]', 'content', /^.*\-(\d{13}|\d{8})\.html(?:\?.*)?$/i],
-        'biomarketcompany.pl': ['meta[property="og:url"][content]', 'content', /^.*\-(\d{13}|\d{8})\.html(?:\?.*)?$/i],
-        'www.tvokazje.pl': ['meta[property="og:url"][content]', 'content', /^.*\-(\d{13}|\d{8})\.html(?:\?.*)?$/i],
-        'sklepdietetyczny.pl': ['link[rel="canonical"][href]', 'href', /^.*\-(\d{13}|\d{8})\.html$/i],
         'lisek.app': ['link[rel="canonical"][href]', 'href', /^.*\/(\d{13}|\d{8})$/i],
-        'studencik.com.pl': ['meta[itemprop="url"][content]', 'content', /^.*\-(\d{13}|\d{8})\.html$/i],
-        'polskikoszyk.pl': ['img[class="product-main-thumb"][src]', 'src', /^.*\/(\d{13}|\d{8})\.[a-z]{3,4}$/i],
-        'www.leclerc24.pl': ['#productWindow .item-image img[src]', 'src', /^.*\/(\d{13}|\d{8}).*$/i],
-        'www.douglas.pl': ['img[id^="addProductToBasketLink_"]', 'id', /^addProductToBasketLink_(\d{13}|\d{8})$/i]
-    };
-    let exceptions2 = {
-        'ezakupy.tesco.pl': [/"gs1:gtin":"(\d{13}|\d{8})(?=")/, document.head],
-        'www.electro-outlet.pl': [/"code_extern":"(\d{13}|\d{8})(?=")/, document.body],
-        'pyszneeko.pl': [/"code_extern":"(\d{13}|\d{8})(?=")/, document.body],
-        'sliv.com.pl': [/"code_producer":"(\d{13}|\d{8})(?=")/, document.body]
     };
     if (exceptions.hasOwnProperty(domain)) {
         let e = exceptions[domain];
@@ -32,13 +14,7 @@
             }
         }
     }
-    if (exceptions2.hasOwnProperty(domain)) {
-        let e = exceptions2[domain];
-        let tmp = e[0].exec(e[1].innerHTML);
-        if (tmp !== null) {
-            result = [tmp[1]];
-        }
-    }
+
     if (result === null) {
         let text = document.body.innerHTML;
         text = text.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, ' ');
@@ -61,6 +37,17 @@
         }
         for (let elem of flix) {
             result.push(elem.getAttribute('data-flix-ean'));
+        }
+        // Kody w danych strukturalnych schema.org (JSON-LD) — generyczny skan
+        // ich nie widzi, bo usuwa wszystkie bloki <script>.
+        let ldjson = document.querySelectorAll('script[type="application/ld+json"]');
+        for (let elem of ldjson) {
+            for (let m of elem.textContent.matchAll(/"gtin(?:13|8)?"\s*:\s*"(\d{13}|\d{8})(?=")/g)) {
+                if (result === null) {
+                    result = [];
+                }
+                result.push(m[1]);
+            }
         }
     }
     if (result !== null) {
