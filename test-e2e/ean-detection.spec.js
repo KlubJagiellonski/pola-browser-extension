@@ -155,6 +155,12 @@ const productPages = [
         url: 'https://www.bee.pl/astra-klej-wikolast-45-g_p1795929.html',
     },
     {
+        store: 'lisek.app',
+        product: 'Nestle Corn Flakes płatki 250g',
+        ean: '5900020000774',
+        url: 'https://lisek.app/sklep/sniadania/22/platki-sniadaniowe/105/nestle-corn-flakes-platki-250g/5900020000774',
+    },
+    {
         store: 'e-prim.pl',
         product: 'Kujawski — Olej Kujawski 2 l',
         ean: '5900012003608',
