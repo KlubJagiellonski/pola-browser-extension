@@ -46,6 +46,18 @@ describe('validateEAN', () => {
             expect(validateEAN('12345')).toBe(false);
         });
 
+        test('14-digit internal code (00461455550000)', () => {
+            expect(validateEAN('00461455550000')).toBe(false);
+        });
+
+        test('valid EAN-13 with extra digit appended (59003977457800)', () => {
+            expect(validateEAN('59003977457800')).toBe(false);
+        });
+
+        test('12 digits (590039774578)', () => {
+            expect(validateEAN('590039774578')).toBe(false);
+        });
+
         test('non-numeric string', () => {
             expect(validateEAN('abcdefghijklm')).toBe(false);
         });

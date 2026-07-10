@@ -43,7 +43,9 @@
         text = text.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, ' ');
         text = text.replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, ' ');
         text = text.replace(/<[^>]+>/gi, ' ');
-        result = text.match(/\d{13}|\d{8}/g);
+        // Granice (?<!\d)/(?!\d) wykluczają fragmenty dłuższych ciągów cyfr,
+        // np. 13-cyfrowy prefiks 14-cyfrowego kodu wewnętrznego sklepu.
+        result = text.match(/(?<!\d)(?:\d{13}|\d{8})(?!\d)/g);
         let gtin13 = document.querySelectorAll('meta[itemprop="gtin13"][content]');
         let gtin8 = document.querySelectorAll('meta[itemprop="gtin8"][content]');
         let flix = document.querySelectorAll('script[data-flix-ean]');
@@ -63,6 +65,14 @@
     if (result !== null) {
         result = result.filter((v, i, a) => a.indexOf(v) === i);
         result = result.filter(validateEAN);
+        // Krótkie kody wewnętrzne sklepów bywają błędnie łapane jako EAN-8;
+        // jeśli obok nich jest dokładnie jeden EAN-13, uznaj go za właściwy kod.
+        if (result.length > 1) {
+            let ean13 = result.filter((v) => v.length === 13);
+            if (ean13.length === 1) {
+                result = ean13;
+            }
+        }
     }
     if (result !== null && result.length === 1) {
         chrome.runtime.sendMessage({

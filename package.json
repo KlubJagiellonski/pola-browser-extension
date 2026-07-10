@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "test": "jest",
-    "test:integration": "xvfb-run npx playwright test"
+    "test:integration": "npx playwright test"
   },
   "devDependencies": {
     "@playwright/test": "^1.61.1",
