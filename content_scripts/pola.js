@@ -5,13 +5,7 @@
         'www.neo24.pl': ['meta[property="og:image"][content]', 'content', /^.*\/(\d{13}|\d{8})..\.[a-z]{3,4}$/i],
         'www.neonet.pl': ['meta[property="og:image"][content]', 'content', /^.*\/(\d{13}|\d{8})..\.[a-z]{3,4}$/i],
         'www.megamarket24.pl': ['meta[property="og:url"][content]', 'content', /^.*\-(\d{13}|\d{8})\.html(?:\?.*)?$/i],
-        'aptekasowa.pl': ['meta[property="og:url"][content]', 'content', /^.*\-(\d{13}|\d{8})\.html(?:\?.*)?$/i],
-        'yesorganic.pl': ['meta[property="og:url"][content]', 'content', /^.*\-(\d{13}|\d{8})\.html(?:\?.*)?$/i],
-        'biomarketcompany.pl': ['meta[property="og:url"][content]', 'content', /^.*\-(\d{13}|\d{8})\.html(?:\?.*)?$/i],
-        'www.tvokazje.pl': ['meta[property="og:url"][content]', 'content', /^.*\-(\d{13}|\d{8})\.html(?:\?.*)?$/i],
-        'sklepdietetyczny.pl': ['link[rel="canonical"][href]', 'href', /^.*\-(\d{13}|\d{8})\.html$/i],
         'lisek.app': ['link[rel="canonical"][href]', 'href', /^.*\/(\d{13}|\d{8})$/i],
-        'studencik.com.pl': ['meta[itemprop="url"][content]', 'content', /^.*\-(\d{13}|\d{8})\.html$/i],
         'polskikoszyk.pl': ['img[class="product-main-thumb"][src]', 'src', /^.*\/(\d{13}|\d{8})\.[a-z]{3,4}$/i],
         'www.leclerc24.pl': ['#productWindow .item-image img[src]', 'src', /^.*\/(\d{13}|\d{8}).*$/i],
         'www.douglas.pl': ['img[id^="addProductToBasketLink_"]', 'id', /^addProductToBasketLink_(\d{13}|\d{8})$/i]
