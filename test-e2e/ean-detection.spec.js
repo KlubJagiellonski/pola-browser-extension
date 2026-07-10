@@ -167,6 +167,12 @@ const productPages = [
         url: 'https://e-prim.pl/pl/products/olej-kujawski-2l-11380',
     },
     {
+        store: 'polskikoszyk.pl',
+        product: 'Dega Sałatka pikantna z makrelą 130 g',
+        ean: '5907623267788',
+        url: 'https://polskikoszyk.pl/dega-salatka-pikantna-z-makrela-130g',
+    },
+    {
         store: 'pyszneeko.pl',
         product: 'Mąka pszenna tortowa typ 480 1 kg Bio Planet EKO',
         ean: '5907814660121',

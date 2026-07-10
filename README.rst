@@ -38,11 +38,11 @@ Wspierane sklepy
 * https://e-prim.pl
 * https://lisek.app/
 * https://pyszneeko.pl/
+* https://polskikoszyk.pl/
 
 Pracujemy nad wsparciem dla
 ---------------------------
 * https://mamyito.pl
-* https://polskikoszyk.pl/
 * https://zakupy.biedronka.pl/
 * https://delio.com.pl/
 * https://topaz24.pl/

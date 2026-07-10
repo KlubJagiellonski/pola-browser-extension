@@ -38,6 +38,17 @@
         for (let elem of flix) {
             result.push(elem.getAttribute('data-flix-ean'));
         }
+        // Kody w danych strukturalnych schema.org (JSON-LD) — generyczny skan
+        // ich nie widzi, bo usuwa wszystkie bloki <script>.
+        let ldjson = document.querySelectorAll('script[type="application/ld+json"]');
+        for (let elem of ldjson) {
+            for (let m of elem.textContent.matchAll(/"gtin(?:13|8)?"\s*:\s*"(\d{13}|\d{8})(?=")/g)) {
+                if (result === null) {
+                    result = [];
+                }
+                result.push(m[1]);
+            }
+        }
     }
     if (result !== null) {
         result = result.filter((v, i, a) => a.indexOf(v) === i);
