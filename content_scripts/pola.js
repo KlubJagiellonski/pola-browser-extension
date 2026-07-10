@@ -43,7 +43,9 @@
         text = text.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, ' ');
         text = text.replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, ' ');
         text = text.replace(/<[^>]+>/gi, ' ');
-        result = text.match(/\d{13}|\d{8}/g);
+        // Granice (?<!\d)/(?!\d) wykluczają fragmenty dłuższych ciągów cyfr,
+        // np. 13-cyfrowy prefiks 14-cyfrowego kodu wewnętrznego sklepu.
+        result = text.match(/(?<!\d)(?:\d{13}|\d{8})(?!\d)/g);
         let gtin13 = document.querySelectorAll('meta[itemprop="gtin13"][content]');
         let gtin8 = document.querySelectorAll('meta[itemprop="gtin8"][content]');
         let flix = document.querySelectorAll('script[data-flix-ean]');
