@@ -36,7 +36,8 @@ Wspierane sklepy
 * https://zakupy-eleclerc.pl
 * https://www.bee.pl/
 * https://e-prim.pl
-  
+* https://lisek.app/
+
 Pracujemy nad wsparciem dla
 ---------------------------
 * https://mamyito.pl
@@ -46,5 +47,4 @@ Pracujemy nad wsparciem dla
 * https://topaz24.pl/
 * https://www.lidl.pl/
 * https://www.emaja24.pl/
-* https://lisek.app/
 * https://marketbio.pl/
