@@ -72,8 +72,20 @@
             for (let ean of eans) {
                 let li = document.createElement('li');
                 let button = document.createElement('button');
-                let t = document.createTextNode(ean);
-                button.appendChild(t);
+                button.innerHTML =
+                    '<svg class="code-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' +
+                        '<rect x="2" y="5" width="2" height="14" rx="0.5" />' +
+                        '<rect x="6" y="5" width="1" height="14" rx="0.5" />' +
+                        '<rect x="9" y="5" width="2" height="14" rx="0.5" />' +
+                        '<rect x="13" y="5" width="1" height="14" rx="0.5" />' +
+                        '<rect x="16" y="5" width="1.5" height="14" rx="0.5" />' +
+                        '<rect x="20" y="5" width="2" height="14" rx="0.5" />' +
+                    '</svg>' +
+                    '<span class="code-value"></span>' +
+                    '<svg class="code-chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true">' +
+                        '<path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />' +
+                    '</svg>';
+                button.querySelector('.code-value').textContent = ean;
                 button.addEventListener('click', this.setEan.bind(this, ean));
                 li.appendChild(button);
                 ul.appendChild(li);
@@ -83,16 +95,16 @@
             if (!url) {
                 return false;
             }
-            try {
-                const u = new URL(url);
-                if (u.protocol !== 'http:' && u.protocol !== 'https:') {
-                    return false;
-                }
-                const host = u.hostname.toLowerCase();
-                return host !== 'example.pl' && host !== 'example.com' && !host.endsWith('.example.pl') && !host.endsWith('.example.com');
-            } catch {
-                return false;
-            }
+            try {
+                const u = new URL(url);
+                if (u.protocol !== 'http:' && u.protocol !== 'https:') {
+                    return false;
+                }
+                const host = u.hostname.toLowerCase();
+                return host !== 'example.pl' && host !== 'example.com' && !host.endsWith('.example.pl') && !host.endsWith('.example.com');
+            } catch {
+                return false;
+            }
         }
         restartAnimation(el) {
             el.classList.remove('animate');
