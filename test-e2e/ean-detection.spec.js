@@ -177,6 +177,18 @@ const productPages = [
         product: 'Mąka pszenna tortowa typ 480 1 kg Bio Planet EKO',
         ean: '5907814660121',
         url: 'https://pyszneeko.pl/product-pol-2744-Maka-pszenna-tortowa-typ-480-1-kg-Bio-Planet-EKO.html?rec=102002101',
+    },
+    {
+        store: 'emaja24.pl',
+        product: 'Aga-Holtex — Daktyle suszone 120 g',
+        ean: '5905027000260',
+        url: 'https://www.emaja24.pl/pl/p/Aga-Holtex-Daktyle-suszone-120g-Bakalie/5470',
+    },
+    {
+        store: 'marketbio.pl',
+        product: 'Sol Kłodawska kam. nat. do przetworów niej. 1,1 kg',
+        ean: '5902587000952',
+        url: 'https://marketbio.pl/sol-klodawska-kam-nat-do-przetworow-niej-1-1-kg.html',
     }
 ];
 
