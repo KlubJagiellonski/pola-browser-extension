@@ -63,6 +63,14 @@
     if (result !== null) {
         result = result.filter((v, i, a) => a.indexOf(v) === i);
         result = result.filter(validateEAN);
+        // Krótkie kody wewnętrzne sklepów bywają błędnie łapane jako EAN-8;
+        // jeśli obok nich jest dokładnie jeden EAN-13, uznaj go za właściwy kod.
+        if (result.length > 1) {
+            let ean13 = result.filter((v) => v.length === 13);
+            if (ean13.length === 1) {
+                result = ean13;
+            }
+        }
     }
     if (result !== null && result.length === 1) {
         chrome.runtime.sendMessage({

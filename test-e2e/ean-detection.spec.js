@@ -177,8 +177,6 @@ test.describe('EAN detection on real product pages', () => {
 
             if (eanMessage) {
                 expect(eanMessage.result).toBe(ean);
-            } else if (multipleMessage) {
-                expect(multipleMessage.result).toContain(ean);
             } else {
                 throw new Error(
                     `Content script nie znalazł EAN ${ean} na stronie ${store}. ` +
