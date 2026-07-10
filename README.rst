@@ -37,6 +37,7 @@ Wspierane sklepy
 * https://www.bee.pl/
 * https://e-prim.pl
 * https://lisek.app/
+* https://pyszneeko.pl/
 
 Pracujemy nad wsparciem dla
 ---------------------------

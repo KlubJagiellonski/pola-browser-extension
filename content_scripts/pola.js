@@ -13,7 +13,6 @@
     let exceptions2 = {
         'ezakupy.tesco.pl': [/"gs1:gtin":"(\d{13}|\d{8})(?=")/, document.head],
         'www.electro-outlet.pl': [/"code_extern":"(\d{13}|\d{8})(?=")/, document.body],
-        'pyszneeko.pl': [/"code_extern":"(\d{13}|\d{8})(?=")/, document.body],
         'sliv.com.pl': [/"code_producer":"(\d{13}|\d{8})(?=")/, document.body]
     };
     if (exceptions.hasOwnProperty(domain)) {

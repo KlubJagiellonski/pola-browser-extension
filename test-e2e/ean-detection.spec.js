@@ -165,6 +165,12 @@ const productPages = [
         product: 'Kujawski — Olej Kujawski 2 l',
         ean: '5900012003608',
         url: 'https://e-prim.pl/pl/products/olej-kujawski-2l-11380',
+    },
+    {
+        store: 'pyszneeko.pl',
+        product: 'Mąka pszenna tortowa typ 480 1 kg Bio Planet EKO',
+        ean: '5907814660121',
+        url: 'https://pyszneeko.pl/product-pol-2744-Maka-pszenna-tortowa-typ-480-1-kg-Bio-Planet-EKO.html?rec=102002101',
     }
 ];
 
