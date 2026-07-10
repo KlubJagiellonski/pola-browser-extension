@@ -72,8 +72,14 @@
             for (let ean of eans) {
                 let li = document.createElement('li');
                 let button = document.createElement('button');
-                let t = document.createTextNode(ean);
-                button.appendChild(t);
+                let icon = document.createElement('span');
+                icon.className = 'code-icon';
+                let value = document.createElement('span');
+                value.className = 'code-value';
+                value.textContent = ean;
+                let chevron = document.createElement('span');
+                chevron.className = 'code-chevron';
+                button.append(icon, value, chevron);
                 button.addEventListener('click', this.setEan.bind(this, ean));
                 li.appendChild(button);
                 ul.appendChild(li);
@@ -83,16 +89,16 @@
             if (!url) {
                 return false;
             }
-            try {
-                const u = new URL(url);
-                if (u.protocol !== 'http:' && u.protocol !== 'https:') {
-                    return false;
-                }
-                const host = u.hostname.toLowerCase();
-                return host !== 'example.pl' && host !== 'example.com' && !host.endsWith('.example.pl') && !host.endsWith('.example.com');
-            } catch {
-                return false;
-            }
+            try {
+                const u = new URL(url);
+                if (u.protocol !== 'http:' && u.protocol !== 'https:') {
+                    return false;
+                }
+                const host = u.hostname.toLowerCase();
+                return host !== 'example.pl' && host !== 'example.com' && !host.endsWith('.example.pl') && !host.endsWith('.example.com');
+            } catch {
+                return false;
+            }
         }
         restartAnimation(el) {
             el.classList.remove('animate');
