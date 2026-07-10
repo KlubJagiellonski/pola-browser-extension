@@ -48,6 +48,9 @@ async function injectContentScript(page) {
 // ============================================================================
 // TESTY
 // ============================================================================
+// Cloudflare wystawia challenge page dla IP runnerów GitHub Actions (data center),
+// co blokuje wykrycie EAN. Niektóre testy przez to są pomijane na CI,
+// lokalnie (rezydencjalny IP) powinny wykonywać się poprawnie.
 
 const productPages = [
     {
@@ -61,8 +64,6 @@ const productPages = [
         product: 'Szklany dzbanek filtrujący Dafi CRYSTAL 2l biały',
         ean: '5900950928254',
         url: 'https://erli.pl/produkt/szklany-dzbanek-filtrujacy-dafi-crystal-2l-bialy,159105253',
-        // Cloudflare wystawia challenge page dla IP runnerów GitHub Actions (data center),
-        // co blokuje wykrycie EAN. Lokalnie (rezydencjalny IP) przechodzi bez problemu.
         skipOnCI: true,
     },
     {
@@ -82,9 +83,82 @@ const productPages = [
         product: 'Dolina Noteci Premium Sterilised Danie z kaczki dla kota 85g',
         ean: '5902921303213',
         url: 'https://leclerc-online.pl/dolina-noteci-premium-sterilised-danie-z-kaczki-dla-kota-85g',
-        // Cloudflare (Turnstile) wystawia challenge page z restrykcyjnym CSP dla IP runnerów
-        // GitHub Actions, co blokuje wstrzyknięcie inline scriptu. Lokalnie działa poprawnie.
         skipOnCI: true,
+    },
+    {
+        store: 'carrefour.pl',
+        product: 'JBB Baldyga — Kiełbaski z filetem z piersi kurczaka 190 g',
+        ean: '5907701809046',
+        url: 'https://www.carrefour.pl/wedliny-kielbasy/kielbasy/kielbasy-miesne/jbb-baldyga-kielbaski-z-filetem-z-piersi-kurczaka-190-g',
+        skipOnCI: true,
+    },
+    {
+        store: 'szybkikoszyk.pl',
+        product: 'Proszek do zmywarek Ludwik 5-funkcyjny 3 kg',
+        ean: '5900498026283',
+        url: 'https://szybkikoszyk.pl/proszek-do-zmywarek-ludwik-5-funkcyjny-worek-3-kg.html',
+    },
+    {
+        store: 'sklep.brat.pl',
+        product: 'Kukurydza prażona Barbecue 200g',
+        ean: '5905514507364',
+        url: 'https://sklep.brat.pl/przekaski/slone-przekaski/kukurydza-prazona-barbecue-200g',
+    },
+    {
+        store: 'espolem.pl',
+        product: 'Frosta — Warzywa na patelnię z bazylią i oregano 400 g',
+        ean: '5900972001249',
+        url: 'https://www.espolem.pl/towar/frosta-warzywa-na-patelnie-z-bazylia-i-oregano-400-g/535550',
+        skipOnCI: true,
+    },
+    {
+        store: 'auchan.pl',
+        product: 'Ser mozzarella w zalewie Galbani 125 g',
+        ean: '8000430133035',
+        url: 'https://zakupy.auchan.pl/products/ser-mozzarella-w-zalewie-galbani-125-g/00506346',
+    },
+    {
+        store: 'e-spar.com.pl',
+        product: 'Wawel Trufle z Wawelu — cukierki kakaowe o smaku rumowym w czekoladzie 245 g',
+        ean: '5900102025688',
+        url: 'https://e-spar.com.pl/towar/wawel-trufle-z-wawelu-cukierki-kakaowe-o-smaku-rumowym-w-czekoladzie-245-g/303523',
+    },
+    {
+        store: 'pakomarket.pl',
+        product: 'Łowicz — Syrop malinowy 400 ml',
+        ean: '5900397745780',
+        url: 'https://www.pakomarket.pl/produkt/lowicz-syrop-malina-butelka-400ml/',
+    },
+    {
+        store: 'bi1.pl',
+        product: 'Alpro Barista Napój owsiano-sojowy o smaku karmelowym 1 l',
+        ean: '5411188140863',
+        url: 'https://bialystok.esklep.bi1.pl/alpro-barista-napoj-owsiano-sojowy-o-smaku-karmelo/3-139-29220',
+    },
+    {
+        store: 'emmamarket.pl',
+        product: 'Ketchup pikantny Codzienny 560 g',
+        ean: '5902241747582',
+        url: 'https://emmamarket.pl/ketchupy/20384-ketchup-pikantny-codzienny-560g.html',
+        skipOnCI: true,
+    },
+    {
+        store: 'zakupy-eleclerc.pl',
+        product: 'Ustronianka Napój gazowany z dodatkiem jodu 1,5 l',
+        ean: '5902403944149',
+        url: 'https://zakupy-eleclerc.pl/ustronianka-napoj-gazowany-z-dodatkiem-jodu-15-l',
+    },
+    {
+        store: 'bee.pl',
+        product: 'Astra — Klej Wikolast 45 g',
+        ean: '5901137178103',
+        url: 'https://www.bee.pl/astra-klej-wikolast-45-g_p1795929.html',
+    },
+    {
+        store: 'e-prim.pl',
+        product: 'Kujawski — Olej Kujawski 2 l',
+        ean: '5900012003608',
+        url: 'https://e-prim.pl/pl/products/olej-kujawski-2l-11380',
     }
 ];
 
